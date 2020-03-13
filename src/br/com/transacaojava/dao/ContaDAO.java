@@ -72,8 +72,6 @@ public class ContaDAO {
 
     public static Collection<ContaModel> select(int id) {
         Connection connection = FabricaConexao.getConnection();
-
-        ContaModel conta = new ContaModel();
         
         Collection<ContaModel> contas = new LinkedList<>();
     
@@ -87,9 +85,12 @@ public class ContaDAO {
             ResultSet Resultado = pst.executeQuery();
 
             if(Resultado.next()){
+                ContaModel conta = new ContaModel();
+
                 conta.setId(Resultado.getInt("id"));
                 conta.setDescricao(Resultado.getString("descricao"));
                 conta.setSaldo(Resultado.getDouble("saldo"));
+                
                 contas.add(conta);
             }
         } catch (SQLException e) {
