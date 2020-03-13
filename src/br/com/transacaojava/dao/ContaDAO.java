@@ -90,7 +90,7 @@ public class ContaDAO {
                 conta.setId(Resultado.getInt("id"));
                 conta.setDescricao(Resultado.getString("descricao"));
                 conta.setSaldo(Resultado.getDouble("saldo"));
-                
+
                 contas.add(conta);
             }
         } catch (SQLException e) {
@@ -104,8 +104,6 @@ public class ContaDAO {
     public static Collection<ContaModel> selectAll() {
         Connection connection = FabricaConexao.getConnection();
 
-        ContaModel conta = new ContaModel();
-
         Collection<ContaModel> contas = new LinkedList<>();
         
         String sql = "select * from conta";
@@ -115,12 +113,16 @@ public class ContaDAO {
             
             ResultSet Resultado = pst.executeQuery();
 
-            while(Resultado.next()){
-                conta.setId(Resultado.getInt("id"));
-                conta.setDescricao(Resultado.getString("descricao"));
-                conta.setSaldo(Resultado.getDouble("saldo"));
-
-                contas.add(conta);
+            if(Resultado.next()) {
+                ContaModel conta = new ContaModel();
+                do {
+                    conta.setId(Resultado.getInt("id"));
+                    conta.setDescricao(Resultado.getString("descricao"));
+                    conta.setSaldo(Resultado.getDouble("saldo"));
+    
+                    contas.add(conta);
+                
+                }while(Resultado.next());
             }
         } catch (SQLException e) {
             System.err.println("Erro ao buscar os objetos : " + e.getMessage());
