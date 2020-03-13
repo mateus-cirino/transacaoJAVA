@@ -12,7 +12,7 @@ import br.com.transacaojava.modelos.ContaModel;
 
 public class ContaDAO {
 
-    public void inserir(ContaModel conta) {
+    public static void inserir(ContaModel conta) {
         Connection connection = FabricaConexao.getConnection();
 
         String sql = "insert into conta( descricao, saldo ) values (?, ?)";
@@ -32,7 +32,7 @@ public class ContaDAO {
         FabricaConexao.closeConnection(connection);
     }
 
-    public void update(ContaModel conta) {
+    public static void update(ContaModel conta) {
         Connection connection = FabricaConexao.getConnection();
 
         String sql = "update conta set descricao = ?, saldo = ? where id = ?";
@@ -52,7 +52,7 @@ public class ContaDAO {
         }
     }
 
-    public void delete(ContaModel conta) {
+    public static void delete(ContaModel conta) {
         Connection connection = FabricaConexao.getConnection();
 
         String sql = "delete from conta where id = ?";
@@ -70,7 +70,7 @@ public class ContaDAO {
         }
     }
 
-    public Collection<ContaModel> select(int id) {
+    public static Collection<ContaModel> select(int id) {
         Connection connection = FabricaConexao.getConnection();
 
         ContaModel conta = new ContaModel();
@@ -100,7 +100,7 @@ public class ContaDAO {
         return contas;
     }
 
-    public Collection<ContaModel> selectAll() {
+    public static Collection<ContaModel> selectAll() {
         Connection connection = FabricaConexao.getConnection();
 
         ContaModel conta = new ContaModel();
