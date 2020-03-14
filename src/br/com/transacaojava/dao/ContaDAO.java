@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import br.com.transacaojava.conexao.FabricaConexao;
 import br.com.transacaojava.modelos.Conta;
 
-public class ContaDAO {
+public class ContaDao {
 
     public static void inserir(Conta conta) {
         Connection connection = FabricaConexao.getConnection();
