@@ -8,11 +8,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import br.com.transacaojava.conexao.FabricaConexao;
-import br.com.transacaojava.modelos.ContaModel;
+import br.com.transacaojava.modelos.Conta;
 
 public class ContaDAO {
 
-    public static void inserir(ContaModel conta) {
+    public static void inserir(Conta conta) {
         Connection connection = FabricaConexao.getConnection();
 
         String sql = "insert into conta( descricao, saldo ) values (?, ?)";
@@ -32,7 +32,7 @@ public class ContaDAO {
         FabricaConexao.closeConnection(connection);
     }
 
-    public static void update(ContaModel conta) {
+    public static void update(Conta conta) {
         Connection connection = FabricaConexao.getConnection();
 
         String sql = "update conta set descricao = ?, saldo = ? where id = ?";
@@ -52,7 +52,7 @@ public class ContaDAO {
         }
     }
 
-    public static void delete(ContaModel conta) {
+    public static void delete(Conta conta) {
         Connection connection = FabricaConexao.getConnection();
 
         String sql = "delete from conta where id = ?";
@@ -70,10 +70,10 @@ public class ContaDAO {
         }
     }
 
-    public static Collection<ContaModel> select(int id) {
+    public static Collection<Conta> select(int id) {
         Connection connection = FabricaConexao.getConnection();
         
-        Collection<ContaModel> contas = new LinkedList<>();
+        Collection<Conta> contas = new LinkedList<>();
     
         String sql = "select * from conta where id = ?";
 
@@ -85,7 +85,7 @@ public class ContaDAO {
             ResultSet Resultado = pst.executeQuery();
 
             if(Resultado.next()){
-                ContaModel conta = new ContaModel();
+                Conta conta = new Conta();
 
                 conta.setId(Resultado.getInt("id"));
                 conta.setDescricao(Resultado.getString("descricao"));
@@ -101,10 +101,10 @@ public class ContaDAO {
         return contas;
     }
 
-    public static Collection<ContaModel> selectAll() {
+    public static Collection<Conta> selectAll() {
         Connection connection = FabricaConexao.getConnection();
 
-        Collection<ContaModel> contas = new LinkedList<>();
+        Collection<Conta> contas = new LinkedList<>();
         
         String sql = "select * from conta";
 
@@ -114,7 +114,7 @@ public class ContaDAO {
             ResultSet Resultado = pst.executeQuery();
 
             if(Resultado.next()) {
-                ContaModel conta = new ContaModel();
+                Conta conta = new Conta();
                 do {
                     conta.setId(Resultado.getInt("id"));
                     conta.setDescricao(Resultado.getString("descricao"));

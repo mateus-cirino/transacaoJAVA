@@ -1,6 +1,6 @@
 package br.com.transacaojava.modelos;
 
-public class ContaModel {
+public class Conta {
     private int id;
     private String descricao;
     private Double saldo;
