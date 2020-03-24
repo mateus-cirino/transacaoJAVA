@@ -29,7 +29,7 @@ public class ContaDao {
             System.err.println("Erro ao salvar o objeto: " + e.getMessage());
         }
 
-        FabricaConexao.closeConnection(connection);
+        FabricaConexao.closeConnection();
     }
 
     public static void update(Conta conta) {
@@ -48,7 +48,7 @@ public class ContaDao {
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar o objeto: " + e.getMessage());
         }finally {
-            FabricaConexao.closeConnection(connection);
+            FabricaConexao.closeConnection();
         }
     }
 
@@ -66,7 +66,7 @@ public class ContaDao {
         } catch (SQLException e) {
             System.err.println("Erro ao deletar o objeto: " + e.getMessage());
         }finally {
-            FabricaConexao.closeConnection(connection);
+            FabricaConexao.closeConnection();
         }
     }
 
@@ -96,7 +96,7 @@ public class ContaDao {
         } catch (SQLException e) {
             System.err.println("Erro ao buscar o objeto " + id  + " : " + e.getMessage());
         }finally {
-            FabricaConexao.closeConnection(connection);
+            FabricaConexao.closeConnection();
         }
         return contas;
     }
@@ -127,7 +127,7 @@ public class ContaDao {
         } catch (SQLException e) {
             System.err.println("Erro ao buscar os objetos : " + e.getMessage());
         }finally {
-            FabricaConexao.closeConnection(connection);
+            FabricaConexao.closeConnection();
         }
         return contas;
     }
