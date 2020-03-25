@@ -1,8 +1,8 @@
 package br.com.transacaojava.controles;
 
 import java.sql.Connection;
-import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import br.com.transacaojava.conexao.FabricaConexaoTransacional;
 import br.com.transacaojava.dao.ContaDao;
@@ -13,30 +13,24 @@ public class ContaController {
     public void testeTransacao() {
         ContaDao contaDao = new ContaDao(Connection.TRANSACTION_SERIALIZABLE);
 
-        try {
-            Conta contaMateus = new Conta();
-            Conta contaFelipe = new Conta();
+        try {            
+            contaDao.select(17)
+                    .ifPresent(c1 -> {
+                        contaDao.select(19)
+                                .ifPresent(c2 -> {
+                                    Double valorASerRetirado = 100.0;
+                                    c1.setSaldo(c1.getSaldo() - valorASerRetirado);
 
-            LinkedList<Conta> contas =  (LinkedList<Conta>) contaDao.select(17);
+                                    contaDao.update(c1);
 
-            contaMateus = contas.getFirst();
+                                    c2.setSaldo(c2.getSaldo() + valorASerRetirado);
 
-            contas =  (LinkedList<Conta>) contaDao.select(19);
+                                    contaDao.update(c2);
 
-            contaFelipe = contas.getFirst();
-
-            Double valorASerRetirado = 200.0;
-
-            contaMateus.setSaldo(contaMateus.getSaldo() - valorASerRetirado);
-
-            contaDao.update(contaMateus);
-
-            contaFelipe.setSaldo(contaFelipe.getSaldo() + valorASerRetirado);
-
-            contaDao.update(contaFelipe);
-
-            FabricaConexaoTransacional.commitTransacao(contaDao.getConnection());
-            FabricaConexaoTransacional.closeConnection(contaDao.getConnection());
+                                    FabricaConexaoTransacional.commitTransacao(contaDao.getConnection());
+                                    FabricaConexaoTransacional.closeConnection(contaDao.getConnection());
+                                });
+                    });
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
