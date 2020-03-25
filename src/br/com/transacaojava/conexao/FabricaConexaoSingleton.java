@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class FabricaConexao {
+public class FabricaConexaoSingleton {
     //utilizando o padrão singleton, uma unica classe que mantem a conexão para todas as outras classes
     private static Connection conexao = null;
 
