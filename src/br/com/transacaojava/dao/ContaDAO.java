@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import br.com.transacaojava.conexao.FabricaConexaoSingleton;
 import br.com.transacaojava.conexao.FabricaConexaoTransacional;
@@ -80,8 +81,8 @@ public class ContaDao {
         }
     }
 
-    public Collection<Conta> select(int id) {
-        Collection<Conta> contas = new LinkedList<>();
+    public Optional<Conta> select(int id) {
+        Conta conta = new Conta();
     
         String sql = "select * from conta where id = ?";
 
@@ -93,20 +94,16 @@ public class ContaDao {
             ResultSet Resultado = pst.executeQuery();
 
             if(Resultado.next()){
-                Conta conta = new Conta();
-
                 conta.setId(Resultado.getInt("id"));
                 conta.setDescricao(Resultado.getString("descricao"));
                 conta.setSaldo(Resultado.getDouble("saldo"));
-
-                contas.add(conta);
             }
         } catch (SQLException e) {
             System.err.println("Erro ao buscar o objeto " + id  + " : " + e.getMessage());
         }finally {
             //FabricaConexaoSingleton.closeConnection();
         }
-        return contas;
+        return Optional.ofNullable(conta);
     }
 
     public Collection<Conta> selectAll() {
