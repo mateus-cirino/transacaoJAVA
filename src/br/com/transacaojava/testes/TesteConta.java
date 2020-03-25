@@ -1,13 +1,12 @@
 package br.com.transacaojava.testes;
 
-import java.util.Collection;
-
-import br.com.transacaojava.dao.ContaDao;
-import br.com.transacaojava.modelos.*;
+import br.com.transacaojava.controles.*;
 
 public class TesteConta {
     public static void main(String[] args) {
-        Collection<Conta> contas = ContaDao.selectAll();
-        
+
+        ContaController contaController = new ContaController();
+
+        contaController.testeTransacao();
     }
 }
