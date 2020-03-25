@@ -42,6 +42,9 @@ public class Conta {
      * @param saldo the saldo to set
      */
     public void setSaldo(Double saldo) {
+        if(saldo < 0){
+            throw new RuntimeException("saldo inválido");
+        }
         this.saldo = saldo;
     }
 
