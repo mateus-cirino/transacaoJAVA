@@ -1,12 +1,9 @@
 package br.com.transacaojava.controles;
 
 import java.sql.Connection;
-import java.util.LinkedList;
-import java.util.Optional;
 
 import br.com.transacaojava.conexao.FabricaConexaoTransacional;
 import br.com.transacaojava.dao.ContaDao;
-import br.com.transacaojava.modelos.*;
 
 public class ContaController {
 
