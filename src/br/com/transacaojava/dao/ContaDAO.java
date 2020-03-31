@@ -188,4 +188,16 @@ public class ContaDao {
             System.err.println("Erro ao utilizar o método transferencia : " + e.getMessage());
         }
     }
+
+    public void rendimento (Conta contaASerDepositada, Double rendimento) {
+        try {
+            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+
+            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+
+            ContaFachada.rendimento(contaASerDepositada, rendimento, conexao);
+        } catch (Exception e) {
+            System.err.println("Erro ao utilizar o método deposita : " + e.getMessage());
+        }
+    }
 }
