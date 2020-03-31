@@ -29,6 +29,11 @@ public class ContaDao {
         this.connection = fabricaConexaoTransacional.getConnection(nivelIsolamento);
     }
 
+    //sobrecarga de método para trabalhar com uma conexao transacional existente
+    public ContaDao(Connection conexao) {
+        this.connection = conexao;
+    }
+
     public void inserir(Conta conta) {
         String sql = "insert into conta( descricao, saldo ) values (?, ?)";
 
