@@ -4,13 +4,13 @@ public class Extrato {
     private Integer id;
     private String descricao;
     private Double valor;
-    public enum Conta {
+    public enum Operacao {
         E("Entrada"),
         S("Saída");
      
         private String descricao;
      
-        Conta(String descricao) {
+        Operacao(String descricao) {
             this.descricao = descricao;
         }
      
@@ -18,7 +18,7 @@ public class Extrato {
             return descricao;
         }
     }
-    private Conta tipo;
+    private Operacao tipo;
     private int idConta;
 
     public Integer getId() {
@@ -33,7 +33,7 @@ public class Extrato {
         return this.valor;
     }
 
-    public Conta getTipo() {
+    public Operacao getTipo() {
         return this.tipo;
     }
 
@@ -53,7 +53,7 @@ public class Extrato {
         this.valor = valor;
     }
 
-    public void setTipo(Conta tipo) {
+    public void setTipo(Operacao tipo) {
         this.tipo = tipo;
     }
 
