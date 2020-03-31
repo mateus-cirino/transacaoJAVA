@@ -27,6 +27,10 @@ public class ExtratoDao {
         FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
         this.connection = fabricaConexaoTransacional.getConnection(nivelIsolamento);
     }
+    //sobrecarga de método para trabalhar com uma conexao transacional existente
+    public ExtratoDao(Connection conexao) {
+        this.connection = conexao;
+    }
 
     public void inserir(Extrato extrato) {
         String sql = "insert into extrato( descricao, valor, tipo, idConta ) values (?, ?, ?, ?)";
