@@ -144,11 +144,16 @@ public class ContaDao {
         }
         return contas;
     }
+    
+    /* 
+        Atenção:
+        Os métodos abaixo utilizam uma nova conexão, isolada da conexão principal da classe
+        (this.connection).
+        Por que disso? Pois para evitar possíveis conflitos com instâncias da classe
+        que estejam operando no formato Singleton.
+    */
 
     public void saca (Conta contaASerSacada, Double valorASerSacado) {
-        //Para evitar que a conexão da classe DAO seja uma conexão singleton
-        //o método saca, por via das dúvidas, cria a sua própria conexão isolada
-        //da conexão da classe.
         try {
             FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
 
@@ -161,9 +166,6 @@ public class ContaDao {
     }
 
     public void deposita (Conta contaASerDepositada, Double valorASerDepositado) {
-        //Para evitar que a conexão da classe DAO seja uma conexão singleton
-        //o método deposito, por via das dúvidas, cria a sua própria conexão isolada
-        //da conexão da classe.
         try {
             FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
 
