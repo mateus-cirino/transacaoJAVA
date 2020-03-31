@@ -173,7 +173,19 @@ public class ContaDao {
 
             ContaFachada.deposita(contaASerDepositada, valorASerDepositado, conexao);
         } catch (Exception e) {
-            System.err.println("Erro ao utilizar o método saca : " + e.getMessage());
+            System.err.println("Erro ao utilizar o método deposita : " + e.getMessage());
+        }
+    }
+
+    public void transferencia (Conta contaASerSacada, Conta contaASerDepositada, Double valorASerSacado) {
+        try {
+            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+
+            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+
+            ContaFachada.transferencia(contaASerSacada, contaASerDepositada, valorASerSacado, conexao);
+        } catch (Exception e) {
+            System.err.println("Erro ao utilizar o método transferencia : " + e.getMessage());
         }
     }
 }

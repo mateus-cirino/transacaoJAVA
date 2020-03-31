@@ -84,4 +84,58 @@ public class ContaFachada {
 
         
     }
+
+    public static void transferencia (Conta contaASerSacada, Conta contaASerDepositada, Double valorASerSacado, Connection conexao) {
+        ContaDao contaDao = new ContaDao(conexao);
+         
+        if(contaDao.select(contaASerSacada.getId()).isPresent()
+                && contaDao.select(contaASerDepositada.getId()).isPresent()){
+            try {
+                ExtratoDao extratoDao = new ExtratoDao(conexao);
+
+                Extrato extrato = new Extrato();
+                extrato.setDescricao("Saque na conta "
+                                    + contaASerSacada.getId());
+                extrato.setTipo(Extrato.Operacao.S);  
+                extrato.setValor(valorASerSacado);
+                extrato.setidConta(contaASerSacada.getId());
+
+                extratoDao.inserir(extrato);
+
+                extrato.setDescricao("Deposito na conta "
+                                    + contaASerDepositada.getId());
+                extrato.setTipo(Extrato.Operacao.E);  
+                extrato.setValor(valorASerSacado);
+                extrato.setidConta(contaASerDepositada.getId());
+
+                extratoDao.inserir(extrato);
+
+                Conta conta = contaDao.select(contaASerSacada.getId()).get();
+                conta.setSaldo(conta.getSaldo() - valorASerSacado);
+
+                contaDao.update(conta);
+
+                conta = contaDao.select(contaASerDepositada.getId()).get();
+                conta.setSaldo(conta.getSaldo() + valorASerSacado);
+
+                contaDao.update(conta);
+    
+                FabricaConexaoTransacional.commitTransacao(conexao);
+                FabricaConexaoTransacional.closeConnection(conexao);
+            } catch (Exception e) {
+                FabricaConexaoTransacional.rollbackTransacao(conexao);
+                FabricaConexaoTransacional.closeConnection(conexao);
+                throw new RuntimeException("Não foi possível efetuar a operacao de "
+                                            + "transferencia"
+                                            + "\nError: " + e.getMessage());
+            }
+            
+        }else{
+            throw new RuntimeException("Não existe uma ou mais conta(s) associada(s) a este(s)"
+                                + " id(s) no banco");
+        }
+
+
+        
+    }
 }
