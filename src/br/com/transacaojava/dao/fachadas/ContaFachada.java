@@ -46,4 +46,42 @@ public class ContaFachada {
 
         
     }
+
+    public static void deposita (Conta contaASerDepositada, Double valorASerDepositado, Connection conexao) {
+        ContaDao contaDao = new ContaDao(conexao);
+         
+        if(contaDao.select(contaASerDepositada.getId()).isPresent()){
+            try {
+                Extrato extrato = new Extrato();
+                extrato.setDescricao("Deposito na conta "
+                                    + contaASerDepositada.getId());
+                extrato.setTipo(Extrato.Operacao.E);  
+                extrato.setValor(valorASerDepositado);
+                extrato.setidConta(contaASerDepositada.getId());
+    
+                ExtratoDao extratoDao = new ExtratoDao(conexao);
+                extratoDao.inserir(extrato);
+    
+                Conta conta = contaDao.select(contaASerDepositada.getId()).get();
+                conta.setSaldo(conta.getSaldo() + valorASerDepositado);
+                contaDao.update(conta);
+    
+                FabricaConexaoTransacional.commitTransacao(conexao);
+                FabricaConexaoTransacional.closeConnection(conexao);
+            } catch (Exception e) {
+                FabricaConexaoTransacional.rollbackTransacao(conexao);
+                FabricaConexaoTransacional.closeConnection(conexao);
+                throw new RuntimeException("Não foi possível efetuar a operacao de "
+                                            + "deposito"
+                                            + "\nError: " + e.getMessage());
+            }
+            
+        }else{
+            throw new RuntimeException("Não existe uma conta associada a este"
+                                + " id no banco");
+        }
+
+
+        
+    }
 }

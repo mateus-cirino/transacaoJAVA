@@ -159,4 +159,19 @@ public class ContaDao {
             System.err.println("Erro ao utilizar o método saca : " + e.getMessage());
         }
     }
+
+    public void deposita (Conta contaASerDepositada, Double valorASerDepositado) {
+        //Para evitar que a conexão da classe DAO seja uma conexão singleton
+        //o método deposito, por via das dúvidas, cria a sua própria conexão isolada
+        //da conexão da classe.
+        try {
+            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+
+            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+
+            ContaFachada.deposita(contaASerDepositada, valorASerDepositado, conexao);
+        } catch (Exception e) {
+            System.err.println("Erro ao utilizar o método saca : " + e.getMessage());
+        }
+    }
 }
