@@ -146,11 +146,16 @@ public class ContaDao {
     }
 
     public void saca (Conta contaASerSacada, Double valorASerSacado) {
+        //Para evitar que a conexão da classe DAO seja uma conexão singleton
+        //o método saca, por via das dúvidas, cria a sua própria conexão isolada
+        //da conexão da classe.
         try {
-            this.connection.setAutoCommit(false);
-            this.connection.setTransactionIsolation(this.nivelIsolamento);
-            ContaFachada.saca(contaASerSacada, valorASerSacado, this.connection);
-        } catch (SQLException e) {
+            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+
+            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+
+            ContaFachada.saca(contaASerSacada, valorASerSacado, conexao);
+        } catch (Exception e) {
             System.err.println("Erro ao utilizar o método saca : " + e.getMessage());
         }
     }
