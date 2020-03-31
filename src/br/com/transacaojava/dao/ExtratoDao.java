@@ -106,7 +106,7 @@ public class ExtratoDao {
                 extrato.setId(Resultado.getInt("id"));
                 extrato.setDescricao(Resultado.getString("descricao"));
                 extrato.setValor(Resultado.getDouble("valor"));
-                extrato.setTipo(Extrato.Conta.valueOf(Resultado.getString("tipo")));
+                extrato.setTipo(Extrato.Operacao.valueOf(Resultado.getString("tipo")));
                 extrato.setidConta(Resultado.getInt("idConta"));
 
                 extratos.add(extrato);
@@ -136,7 +136,7 @@ public class ExtratoDao {
                     extrato.setId(Resultado.getInt("id"));
                     extrato.setDescricao(Resultado.getString("descricao"));
                     extrato.setValor(Resultado.getDouble("valor"));
-                    extrato.setTipo(Extrato.Conta.valueOf(Resultado.getString("tipo")));
+                    extrato.setTipo(Extrato.Operacao.valueOf(Resultado.getString("tipo")));
                     extrato.setidConta(Resultado.getInt("idConta"));
 
                     extratos.add(extrato);
