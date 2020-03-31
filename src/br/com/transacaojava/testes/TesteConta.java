@@ -7,6 +7,6 @@ public class TesteConta {
 
         ContaController contaController = new ContaController();
 
-        contaController.testeTransacao();
+        contaController.testeTransacao(28, 10.0);
     }
 }
