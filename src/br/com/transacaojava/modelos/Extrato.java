@@ -5,8 +5,8 @@ public class Extrato {
     private String descricao;
     private Double valor;
     public enum Conta {
-        D("Débito"),
-        C("Credito");
+        E("Entrada"),
+        S("Saída");
      
         private String descricao;
      
