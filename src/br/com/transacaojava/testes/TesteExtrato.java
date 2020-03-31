@@ -18,7 +18,7 @@ public class TesteExtrato {
         extrato.setId(2);
         extrato.setDescricao("Extrato2");
         extrato.setValor(10.0);
-        extrato.setTipo(Extrato.Conta.D);
+        extrato.setTipo(Extrato.Operacao.E);
         extrato.setidConta(17);
 
         extratoDao.update(extrato);
