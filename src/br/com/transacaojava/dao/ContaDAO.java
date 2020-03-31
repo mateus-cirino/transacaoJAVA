@@ -10,10 +10,13 @@ import java.util.Optional;
 
 import br.com.transacaojava.conexao.FabricaConexaoSingleton;
 import br.com.transacaojava.conexao.FabricaConexaoTransacional;
+import br.com.transacaojava.dao.fachadas.ContaFachada;
 import br.com.transacaojava.modelos.Conta;
 
 public class ContaDao {
     private Connection connection;
+    private int nivelIsolamento = Connection.TRANSACTION_REPEATABLE_READ; //valor default do nível do
+                                                                          //isolamento
 
     public Connection getConnection() {
         return connection;
@@ -25,8 +28,9 @@ public class ContaDao {
     }
 
     public ContaDao(int nivelIsolamento) {
+        this.nivelIsolamento = nivelIsolamento;
         FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
-        this.connection = fabricaConexaoTransacional.getConnection(nivelIsolamento);
+        this.connection = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
     }
 
     //sobrecarga de método para trabalhar com uma conexao transacional existente
@@ -139,5 +143,15 @@ public class ContaDao {
             //FabricaConexaoSingleton.closeConnection();
         }
         return contas;
+    }
+
+    public void saca (Conta contaASerSacada, Double valorASerSacado) {
+        try {
+            this.connection.setAutoCommit(false);
+            this.connection.setTransactionIsolation(this.nivelIsolamento);
+            ContaFachada.saca(contaASerSacada, valorASerSacado, this.connection);
+        } catch (SQLException e) {
+            System.err.println("Erro ao utilizar o método saca : " + e.getMessage());
+        }
     }
 }
