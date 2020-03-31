@@ -149,8 +149,8 @@ public class ContaDao {
         Atenção:
         Os métodos abaixo utilizam uma nova conexão, isolada da conexão principal da classe
         (this.connection).
-        Por que disso? Pois para evitar possíveis conflitos com instâncias da classe
-        que estejam operando no formato Singleton.
+        Por que disso? Os métodos abaixo utilizam uma conexão Transacional, então iremos
+        evitar possíveis conflitos com instâncias da classe que estejam operando no formato Singleton.
     */
 
     public void saca (Conta contaASerSacada, Double valorASerSacado) {
@@ -165,6 +165,19 @@ public class ContaDao {
         }
     }
 
+    public void deposita (Conta contaASerDepositada, Double valorASerDepositado) {
+        try {
+            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+
+            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+
+            ContaFachada.deposita(contaASerDepositada, valorASerDepositado, conexao);
+        } catch (Exception e) {
+            System.err.println("Erro ao utilizar o método saca : " + e.getMessage());
+        }
+    }
+
+    
     public void deposita (Conta contaASerDepositada, Double valorASerDepositado) {
         try {
             FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
