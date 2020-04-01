@@ -9,172 +9,132 @@ import br.com.transacaojava.modelos.Conta;
 import br.com.transacaojava.modelos.Extrato;
 
 public class ContaFachada {
-    public static void saca (Conta contaASerSacada, Double valorASerSacado, Connection conexao) {
-        ContaDao contaDao = new ContaDao(conexao);
-         
-        if(contaDao.select(contaASerSacada.getId()).isPresent()){
-            try {
-                Extrato extrato = new Extrato();
-                extrato.setDescricao("Saque da conta "
-                                    + contaASerSacada.getId());
-                extrato.setTipo(Extrato.Operacao.S);  
-                extrato.setValor(valorASerSacado);
-                extrato.setidConta(contaASerSacada.getId());
+    public static void saca (Conta contaASerSacada, Double valorASerSacado, Connection conexao) {         
+        try {
+            Extrato extrato = new Extrato();
+            extrato.setDescricao("Saque da conta "
+                                + contaASerSacada.getId());
+            extrato.setTipo(Extrato.Operacao.S);  
+            extrato.setValor(valorASerSacado);
+            extrato.setidConta(contaASerSacada.getId());
     
-                ExtratoDao extratoDao = new ExtratoDao(conexao);
-                extratoDao.inserir(extrato);
+            ExtratoDao extratoDao = new ExtratoDao(conexao);
+            extratoDao.inserir(extrato);
     
-                Conta conta = contaDao.select(contaASerSacada.getId()).get();
-                conta.setSaldo(conta.getSaldo() - valorASerSacado);
-                contaDao.update(conta);
+            contaASerSacada.setSaldo(contaASerSacada.getSaldo() - valorASerSacado);
+
+            ContaDao contaDao = new ContaDao(conexao);
+            contaDao.update(contaASerSacada);
     
-                FabricaConexaoTransacional.commitTransacao(conexao);
-                FabricaConexaoTransacional.closeConnection(conexao);
-            } catch (Exception e) {
-                FabricaConexaoTransacional.rollbackTransacao(conexao);
-                FabricaConexaoTransacional.closeConnection(conexao);
-                throw new RuntimeException("Não foi possível efetuar a operacao de "
-                                            + "saque"
-                                            + "\nError: " + e.getMessage());
-            }
-            
-        }else{
-            throw new RuntimeException("Não existe uma conta associada a este"
-                                + " id no banco");
+            FabricaConexaoTransacional.commitTransacao(conexao);
+            FabricaConexaoTransacional.closeConnection(conexao);
+        } catch (Exception e) {
+            FabricaConexaoTransacional.rollbackTransacao(conexao);
+            FabricaConexaoTransacional.closeConnection(conexao);
+            throw new RuntimeException("Não foi possível efetuar a operacao de "
+                                        + "saque"
+                                        + "\nError: " + e.getMessage());
         }
+            
 
 
         
     }
 
     public static void deposita (Conta contaASerDepositada, Double valorASerDepositado, Connection conexao) {
-        ContaDao contaDao = new ContaDao(conexao);
-         
-        if(contaDao.select(contaASerDepositada.getId()).isPresent()){
-            try {
-                Extrato extrato = new Extrato();
-                extrato.setDescricao("Deposito na conta "
-                                    + contaASerDepositada.getId());
-                extrato.setTipo(Extrato.Operacao.E);  
-                extrato.setValor(valorASerDepositado);
-                extrato.setidConta(contaASerDepositada.getId());
+        try {
+            Extrato extrato = new Extrato();
+            extrato.setDescricao("Deposito na conta "
+                                + contaASerDepositada.getId());
+            extrato.setTipo(Extrato.Operacao.E);  
+            extrato.setValor(valorASerDepositado);
+            extrato.setidConta(contaASerDepositada.getId());
+
+            ExtratoDao extratoDao = new ExtratoDao(conexao);
+            extratoDao.inserir(extrato);
+
+            contaASerDepositada.setSaldo(contaASerDepositada.getSaldo() + valorASerDepositado);
+
+            ContaDao contaDao = new ContaDao(conexao);
+            contaDao.update(contaASerDepositada);
     
-                ExtratoDao extratoDao = new ExtratoDao(conexao);
-                extratoDao.inserir(extrato);
-    
-                Conta conta = contaDao.select(contaASerDepositada.getId()).get();
-                conta.setSaldo(conta.getSaldo() + valorASerDepositado);
-                contaDao.update(conta);
-    
-                FabricaConexaoTransacional.commitTransacao(conexao);
-                FabricaConexaoTransacional.closeConnection(conexao);
-            } catch (Exception e) {
-                FabricaConexaoTransacional.rollbackTransacao(conexao);
-                FabricaConexaoTransacional.closeConnection(conexao);
-                throw new RuntimeException("Não foi possível efetuar a operacao de "
-                                            + "deposito"
-                                            + "\nError: " + e.getMessage());
-            }
-            
-        }else{
-            throw new RuntimeException("Não existe uma conta associada a este"
-                                + " id no banco");
+            FabricaConexaoTransacional.commitTransacao(conexao);
+            FabricaConexaoTransacional.closeConnection(conexao);
+        } catch (Exception e) {
+            FabricaConexaoTransacional.rollbackTransacao(conexao);
+            FabricaConexaoTransacional.closeConnection(conexao);
+            throw new RuntimeException("Não foi possível efetuar a operacao de "
+                                        + "deposito"
+                                        + "\nError: " + e.getMessage());
         }
-
-
-        
     }
 
     public static void transferencia (Conta contaASerSacada, Conta contaASerDepositada, Double valorASerSacado, Connection conexao) {
-        ContaDao contaDao = new ContaDao(conexao);
-         
-        if(contaDao.select(contaASerSacada.getId()).isPresent()
-                && contaDao.select(contaASerDepositada.getId()).isPresent()){
-            try {
-                ExtratoDao extratoDao = new ExtratoDao(conexao);
+        try {
+            ExtratoDao extratoDao = new ExtratoDao(conexao);
 
-                Extrato extrato = new Extrato();
-                extrato.setDescricao("Saque na conta "
-                                    + contaASerSacada.getId());
-                extrato.setTipo(Extrato.Operacao.S);  
-                extrato.setValor(valorASerSacado);
-                extrato.setidConta(contaASerSacada.getId());
+            Extrato extrato = new Extrato();
+            extrato.setDescricao("Saque na conta "
+                                + contaASerSacada.getId());
+            extrato.setTipo(Extrato.Operacao.S);  
+            extrato.setValor(valorASerSacado);
+            extrato.setidConta(contaASerSacada.getId());
 
-                extratoDao.inserir(extrato);
+            extratoDao.inserir(extrato);
 
-                extrato.setDescricao("Deposito na conta "
-                                    + contaASerDepositada.getId());
-                extrato.setTipo(Extrato.Operacao.E);  
-                extrato.setValor(valorASerSacado);
-                extrato.setidConta(contaASerDepositada.getId());
+            extrato.setDescricao("Deposito na conta "
+                                + contaASerDepositada.getId());
+            extrato.setTipo(Extrato.Operacao.E);  
+            extrato.setValor(valorASerSacado);
+            extrato.setidConta(contaASerDepositada.getId());
 
-                extratoDao.inserir(extrato);
+            extratoDao.inserir(extrato);
 
-                Conta conta = contaDao.select(contaASerSacada.getId()).get();
-                conta.setSaldo(conta.getSaldo() - valorASerSacado);
+            contaASerSacada.setSaldo(contaASerSacada.getSaldo() - valorASerSacado);
+            contaASerDepositada.setSaldo(contaASerDepositada.getSaldo() + valorASerSacado);
 
-                contaDao.update(conta);
+            ContaDao contaDao = new ContaDao(conexao);
 
-                conta = contaDao.select(contaASerDepositada.getId()).get();
-                conta.setSaldo(conta.getSaldo() + valorASerSacado);
-
-                contaDao.update(conta);
+            contaDao.update(contaASerSacada);
+            contaDao.update(contaASerDepositada);
     
-                FabricaConexaoTransacional.commitTransacao(conexao);
-                FabricaConexaoTransacional.closeConnection(conexao);
-            } catch (Exception e) {
-                FabricaConexaoTransacional.rollbackTransacao(conexao);
-                FabricaConexaoTransacional.closeConnection(conexao);
-                throw new RuntimeException("Não foi possível efetuar a operacao de "
-                                            + "transferencia"
-                                            + "\nError: " + e.getMessage());
-            }
-            
-        }else{
-            throw new RuntimeException("Não existe uma ou mais conta(s) associada(s) a este(s)"
-                                + " id(s) no banco");
+            FabricaConexaoTransacional.commitTransacao(conexao);
+            FabricaConexaoTransacional.closeConnection(conexao);
+        } catch (Exception e) {
+            FabricaConexaoTransacional.rollbackTransacao(conexao);
+            FabricaConexaoTransacional.closeConnection(conexao);
+            throw new RuntimeException("Não foi possível efetuar a operacao de "
+                                        + "transferencia"
+                                        + "\nError: " + e.getMessage());
         }
-
-
-        
+            
     }
 
     public static void rendimento (Conta contaASerDepositada, Double rendimento, Connection conexao) {
-        ContaDao contaDao = new ContaDao(conexao);
-         
-        if(contaDao.select(contaASerDepositada.getId()).isPresent()){
-            try {
-                Conta conta = contaDao.select(contaASerDepositada.getId()).get();
+        try {
+            Extrato extrato = new Extrato();
+            extrato.setDescricao("Deposito na conta "
+                                + contaASerDepositada.getId());
+            extrato.setTipo(Extrato.Operacao.E);  
+            extrato.setValor(contaASerDepositada.getSaldo() * rendimento);
+            extrato.setidConta(contaASerDepositada.getId());
+    
+            ExtratoDao extratoDao = new ExtratoDao(conexao);
+            extratoDao.inserir(extrato);
 
-                Extrato extrato = new Extrato();
-                extrato.setDescricao("Deposito na conta "
-                                    + contaASerDepositada.getId());
-                extrato.setTipo(Extrato.Operacao.E);  
-                extrato.setValor(conta.getSaldo() * rendimento);
-                extrato.setidConta(contaASerDepositada.getId());
-    
-                ExtratoDao extratoDao = new ExtratoDao(conexao);
-                extratoDao.inserir(extrato);
-    
-                conta.setSaldo(conta.getSaldo() + conta.getSaldo() * rendimento);
-                contaDao.update(conta);
-    
-                FabricaConexaoTransacional.commitTransacao(conexao);
-                FabricaConexaoTransacional.closeConnection(conexao);
-            } catch (Exception e) {
-                FabricaConexaoTransacional.rollbackTransacao(conexao);
-                FabricaConexaoTransacional.closeConnection(conexao);
-                throw new RuntimeException("Não foi possível efetuar a operacao de "
-                                            + "rendimento"
-                                            + "\nError: " + e.getMessage());
-            }
+            contaASerDepositada.setSaldo(contaASerDepositada.getSaldo() * rendimento);
             
-        }else{
-            throw new RuntimeException("Não existe uma conta associada a este"
-                                + " id no banco");
-        }
+            ContaDao contaDao = new ContaDao(conexao);
+            contaDao.update(contaASerDepositada);
 
-
-        
+            FabricaConexaoTransacional.commitTransacao(conexao);
+            FabricaConexaoTransacional.closeConnection(conexao);
+        } catch (Exception e) {
+            FabricaConexaoTransacional.rollbackTransacao(conexao);
+            FabricaConexaoTransacional.closeConnection(conexao);
+            throw new RuntimeException("Não foi possível efetuar a operacao de "
+                                        + "rendimento"
+                                        + "\nError: " + e.getMessage());
+        } 
     }
 }

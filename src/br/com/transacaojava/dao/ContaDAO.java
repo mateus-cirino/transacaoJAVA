@@ -153,51 +153,86 @@ public class ContaDao {
         evitar possíveis conflitos com instâncias da classe que estejam operando no formato Singleton.
     */
 
-    public void saca (Conta contaASerSacada, Double valorASerSacado) {
+    public void saca (int idContaASerSacada, Double valorASerSacado) {
         try {
-            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+            Optional<Conta> optContaASerSacada = this.select(idContaASerSacada);
 
-            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+            if(optContaASerSacada.isPresent()) {
+                FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
 
-            ContaFachada.saca(contaASerSacada, valorASerSacado, conexao);
+                Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+    
+                ContaFachada.saca(optContaASerSacada.get(), valorASerSacado, conexao);
+            }else {
+                throw new RuntimeException("Não existe uma conta associada a este"
+                                            + " id no banco");
+            }
+
+            
+        } catch (Exception e) {
+            System.err.println("Erro ao utilizar o método saca : " + e.getMessage());
+        }
+    }
+
+    public void deposita (int idContaASerDepositada, Double valorASerDepositado) {
+        try {
+            Optional<Conta> optContaASerDepositada = this.select(idContaASerDepositada);
+
+            if(optContaASerDepositada.isPresent()) {
+                FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+
+                Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+    
+                ContaFachada.deposita(optContaASerDepositada.get(), valorASerDepositado, conexao);
+            }else {
+                throw new RuntimeException("Não existe uma conta associada a este"
+                                            + " id no banco");
+            }
+
+            
         } catch (Exception e) {
             System.err.println("Erro ao utilizar o método deposita : " + e.getMessage());
         }
     }
 
-    public void deposita (Conta contaASerDepositada, Double valorASerDepositado) {
+    public void transferencia (int idContaASerSacada, int idContaASerDepositada, Double valorASerSacado) {
         try {
-            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+            Optional<Conta> optContaASerSacada = this.select(idContaASerSacada);
+            Optional<Conta> optContaASerDepositada = this.select(idContaASerDepositada);
 
-            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+            if(optContaASerSacada.isPresent() && optContaASerDepositada.isPresent()) {
+                FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
 
-            ContaFachada.deposita(contaASerDepositada, valorASerDepositado, conexao);
-        } catch (Exception e) {
-            System.err.println("Erro ao utilizar o método deposita : " + e.getMessage());
-        }
-    }
-
-    public void transferencia (Conta contaASerSacada, Conta contaASerDepositada, Double valorASerSacado) {
-        try {
-            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
-
-            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
-
-            ContaFachada.transferencia(contaASerSacada, contaASerDepositada, valorASerSacado, conexao);
+                Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+    
+                ContaFachada.transferencia(optContaASerSacada.get(), optContaASerDepositada.get(), valorASerSacado, conexao);
+            }else {
+                throw new RuntimeException("Não existe uma ou mais conta(s) associada(s) a este(s)"
+                                            + " id(s) no banco");
+            }
         } catch (Exception e) {
             System.err.println("Erro ao utilizar o método transferencia : " + e.getMessage());
         }
     }
 
-    public void rendimento (Conta contaASerDepositada, Double rendimento) {
+    public void rendimento (int idContaASerDepositada, Double rendimento) {
         try {
-            FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
+            Optional<Conta> optContaASerDepositada = this.select(idContaASerDepositada);
 
-            Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+            if(optContaASerDepositada.isPresent()) {
+                FabricaConexaoTransacional fabricaConexaoTransacional = new FabricaConexaoTransacional();
 
-            ContaFachada.rendimento(contaASerDepositada, rendimento, conexao);
+                Connection conexao = fabricaConexaoTransacional.getConnection(this.nivelIsolamento);
+    
+                ContaFachada.rendimento(optContaASerDepositada.get(), rendimento, conexao);
+            }else {
+                throw new RuntimeException("Não existe uma conta associada a este"
+                                            + " id no banco");
+            }
+
+            
         } catch (Exception e) {
-            System.err.println("Erro ao utilizar o método deposita : " + e.getMessage());
+            System.err.println("Erro ao utilizar o método rendimento : " + e.getMessage());
         }
     }
 }
